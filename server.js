@@ -6,9 +6,12 @@ const sSender = require("./socketSender")
 const comOut = require("./commandsOut")
 chalk = require("chalk");
 
+let express = require('express')
 var app = require('express')();
 var http = require('http').Server(app);
 io = require('socket.io')(http);
+
+app.use(express.static('build'));
 
 http.listen(3000, function(){
   console.log('listening on *:3000');

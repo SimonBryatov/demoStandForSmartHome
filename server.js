@@ -10,8 +10,10 @@ var myParser = function(emitter, buffer) {
 };
 
 var port = new SerialPort('COM3', {
-  baudRate: 9600
+  baudRate: 9600, autoOpen: false
 });
+
+open();
 
 const parser = port.pipe(new SerialPort.parsers.Delimiter({ delimiter: '\u0003' }))
 
@@ -50,7 +52,7 @@ port.on("open", () => {
   parser.on('data', function (data) {
     //console.log(data.toString())
     sSender(data.toString());
-  }); 
+  });  
 
 let a = Math.random()*50;
 a = Math.floor(a);
@@ -66,3 +68,16 @@ a = Math.floor(a);
 //       });  
 // }, 1000)
  })
+
+ port.on("close", () => {
+  console.log(chalk.red('Port has closed!'));
+  open(); 
+ })
+
+ function open () {
+  port.open((err) => {
+      if (!err) return;
+      console.log('Port is not open: ' + err.message);
+      setTimeout(open, 1000); // next attempt to open after 10s
+  });
+}

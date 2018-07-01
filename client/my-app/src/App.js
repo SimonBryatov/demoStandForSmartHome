@@ -28,7 +28,7 @@ let store = new Store();
     for(let i=0; i < 10; i++) {
       res.push(<Grid item xs={4}>
         <Chip label={`Switch ${i+1}`} />
-        <Switch checked={store.controls.switches[i].get()} onChange={(e, v)=> {store.controls.switches[i].set(v);  store.controlMsg(`Switch${i+1}`, v)}} />
+        <Switch checked={store.controls.switches[i].get()} onChange={(e, v)=> {store.controls.switches[i].set(v);  store.controlMsg(`Switch${i+1}`, Number(v))}} />
         </Grid>)
     }
     return res

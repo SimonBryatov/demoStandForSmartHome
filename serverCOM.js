@@ -9,7 +9,8 @@ var myParser = function(emitter, buffer) {
     }
 };
 
-var port = new SerialPort('COM3', {
+var sp = process.argv[2]
+var port = new SerialPort(sp || 'COM3', {
   baudRate: 9600, autoOpen: false
 });
 

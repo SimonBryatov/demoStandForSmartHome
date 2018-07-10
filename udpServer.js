@@ -6,7 +6,8 @@ const comOut = require("./commandsOut")
 const sSender = require("./socketSenderUdp")
 
 ///
-let destIP = "192.168.177.2" //адрес ардуины
+let destIP = process.argv[2] || "192.168.1.177" //адрес ардуины
+let port = process.argv[3] || 3001  //порт сервера
 ///
 
 let express = require('express')
@@ -25,8 +26,8 @@ udpSocket.on('error', (err) => {
   udpSocket.close();
 });
 
-udpSocket.on('message', (msg, rinfo) => {
-  console.log(`udpSocket got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+udpSocket.on('message', (msg, rmsg) => {
+  console.log(`udpSocket got: ${msg} from ${rmsg.address}:${rmsg.port}`);
   sSender(msg.toString());
 });
 
@@ -36,19 +37,27 @@ udpSocket.on('listening', () => {
   console.log(`udpSocket listening ${address.address}:${address.port}`);
 });
 
-udpSocket.bind(41234);
+udpSocket.bind(port);
 
 io.on('connection', function(socket){
     console.log('a user connected');
     socket.on("controlMsg", (data) => {
         let ind = comOut[data[0]]
-        let info = data[1]
+        let msg = data[1]
+
+        if (msg === true) {
+          msg = 1
+        }
+
+        if (msg === false) {
+          msg = 0
+        }
         if (ind) {
-            udpSocket.send("\u0001" + ind + "\u0002" + info + "\u0003" + 125117807 + "\u0004", "41234", destIP, (err) => {
+            udpSocket.send("\u0001" + ind + "\u0002" + msg + "\u0003" + 120720286 + "\u0004", port, destIP, (err) => {
                 if (err) {
                               return console.log('Error on write: ', err.message);
                             }
-                console.log(chalk.cyan("Data sent:"), "|", data[0], "|", info, "|", ind);
+                console.log(chalk.cyan("Data sent:"), "|", data[0], "|", msg, "|", ind);
             })
             
         } else console.log(chalk.yellow(`No such output command! `) + data[0])

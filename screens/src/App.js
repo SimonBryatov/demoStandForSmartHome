@@ -7,7 +7,8 @@ class App extends Component {
   constructor(props) {
   super(props);
   let id = Number(window.location.hash.split('').splice(1).join(''))
-  this.socket = socket('http://localhost:3010');
+  //console.log(window.location.host)
+  this.socket = socket(window.location.host);
   this.socket.on('connection', console.log('connected'))
   this.socket.on('data', (data) => {this.setState({data: data[id]}); console.log(data)})
   }
